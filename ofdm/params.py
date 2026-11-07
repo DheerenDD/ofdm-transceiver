@@ -24,6 +24,11 @@ class OFDMParams:
     pilot_value: complex = 1 + 0j   # known pilot symbol (unit power)
     seed: int = 42                  # random seed so results are reproducible
 
+    # ---- Default multipath channel (exponential power-delay profile) ----
+    n_taps: int = 4                 # number of echo paths
+    max_delay: int = 4              # delay of the last path in samples (must be <= n_cp)
+    decay_db: float = 3.0           # each path is this many dB weaker than the previous
+
     # ---- Derived values (filled in automatically) ----
     pilot_idx: np.ndarray = field(init=False, repr=False)
     data_idx: np.ndarray = field(init=False, repr=False)
@@ -106,6 +111,8 @@ class OFDMParams:
             f"Max echo path difference : {self.max_path_difference_m:.0f} m",
             f"Bits per OFDM symbol     : {self.bits_per_ofdm_symbol}",
             f"Net data rate            : {self.data_rate / 1e6:.1f} Mbit/s",
+            f"Channel                  : {self.n_taps} taps, max delay {self.max_delay} samples"
+            f" = {self.max_delay / self.fs * 1e6:.2f} us, {self.decay_db:.0f} dB/tap decay",
         ]
         return "\n".join(lines)
 
