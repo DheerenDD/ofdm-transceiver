@@ -86,6 +86,7 @@ def main():
 
     print()
     print(f"{sum(results)}/{len(results)} checks passed")
+    return all(results)
 
 
 if __name__ == "__main__":
