@@ -33,7 +33,9 @@ def extract_data(grid: np.ndarray, p: OFDMParams) -> np.ndarray:
 def modulate(grid: np.ndarray, p: OFDMParams) -> np.ndarray:
     """Grid -> serial time-domain signal (IFFT per symbol, then add CP)."""
     time_symbols = np.fft.ifft(grid, axis=1, norm="ortho")
-    cp = time_symbols[:, -p.n_cp:]                 # copy the last n_cp samples
+    # Copy the last n_cp samples. Index from n_fft - n_cp rather than -n_cp,
+    # because x[:, -0:] would return the whole symbol when n_cp = 0.
+    cp = time_symbols[:, p.n_fft - p.n_cp:]
     with_cp = np.hstack([cp, time_symbols])        # ... to the front
     return with_cp.ravel()                         # parallel -> serial
 
